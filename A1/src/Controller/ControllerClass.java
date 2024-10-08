@@ -1,5 +1,6 @@
 package Controller;
 
+import Exceptions.ArrayIsFullException;
 import Model.*;
 import Repository.*;
 
@@ -31,12 +32,18 @@ public class ControllerClass implements Controller {
     }
     @Override
     public void addTree(String type, int age){
-        if(type.equals("Apple"))
-            repository.addTree(new Apple(age));
-        else if (type.equals("Pear"))
-            repository.addTree(new Pear(age));
-        else if (type.equals("Cherry"))
-            repository.addTree(new Cherry(age));
+        try{
+            if (type.equals("Apple"))
+                repository.addTree(new Apple(age));
+            else if (type.equals("Pear"))
+                repository.addTree(new Pear(age));
+            else if (type.equals("Cherry"))
+                repository.addTree(new Cherry(age));
+            System.out.println("Element added successfully");
+        }
+        catch (ArrayIsFullException e){
+            System.out.println(e.getMessage());
+        }
     }
     @Override
     public void removeTree(int index){

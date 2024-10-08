@@ -1,10 +1,13 @@
 package Repository;
+import Exceptions.ArrayIsFullException;
 import Model.*;
+import Exceptions.*;
 public class RepositoryMemory implements Repository {
+    private static int ARRAY_SIZE = 20;
     private Tree[] trees;
     private int size;
     public RepositoryMemory() {
-        trees = new Tree[20];
+        trees = new Tree[ARRAY_SIZE];
         size = 0;
     }
     @Override
@@ -28,7 +31,10 @@ public class RepositoryMemory implements Repository {
         return  trees[treeIndex];
     }
     @Override
-    public void addTree(Tree tree){
+    public void addTree(Tree tree) throws ArrayIsFullException {
+        if(this.size == ARRAY_SIZE){
+            throw new ArrayIsFullException();
+        }
         trees[size] = tree;
         size++;
     }
@@ -38,5 +44,9 @@ public class RepositoryMemory implements Repository {
             trees[i] = trees[i+1];
         }
         size-=1;
+    }
+    @Override
+    public void undoLastOperation() {
+
     }
 }
