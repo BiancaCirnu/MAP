@@ -56,4 +56,18 @@ public class ArithmeticExpression implements IExpression {
                 throw new InvalidOperatorException();
         }
     }
+
+    public String toString(){
+        switch (operator){
+            case ADD:
+                return first.toString() + " + " + second.toString();
+            case SUB:
+                return first.toString() + " - " + second.toString();
+            case MUL:
+                return first.toString() + " * " + second.toString();
+            case DIV:
+                return first.toString() + " / " + second.toString();
+        }
+        return first.toString() + " " + operator.toString() + " " + second.toString();
+    }
 }

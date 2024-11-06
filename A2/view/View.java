@@ -34,9 +34,10 @@ public class View {
 
         System.out.println("5. Set display flag to true");
         System.out.println("6. Set display flag to false");
-        System.out.println("7. Quit program");
+        System.out.println("7. Error 1");
+        System.out.println("8. Quit program");
     }
-    public void start() throws MyException{
+    public void start() {
 
         printMenu();
         Scanner scanner = new Scanner(System.in);
@@ -64,6 +65,7 @@ public class View {
                     break;
                 case 7:
                     error1();
+                    break;
                 default:
                     System.out.println("Invalid option");
                     break;
@@ -74,15 +76,16 @@ public class View {
         }
     }
 
-    public void firstProgram() throws MyException {
+    public void firstProgram() {
         IStatement ex1 = new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                 new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(2))), new PrintStatement(new VariableExpression("v"))));
         controller.addState(ex1);
-        controller.allStates();
-        System.out.println("Program 1 result:\n" + controller.currentProgramState().toString());
+        controller.allSteps();
+        if(controller.getRepository().getCurrentProgramState().getExecutionStack().isEmpty())
+            System.out.println("Program 1 result:\n" + controller.currentProgramState().toString());
     }
 
-    public void secondProgram() throws MyException {
+    public void secondProgram() {
         IStatement ex2 = new CompoundStatement( new VariableDeclarationStatement("a",new IntType()),
                 new CompoundStatement(new VariableDeclarationStatement("b",new IntType()),
                         new CompoundStatement(new AssignStatement("a", new ArithmeticExpression("+",new ValueExpression(new IntValue(2)),new
@@ -90,11 +93,12 @@ public class View {
                                 new CompoundStatement(new AssignStatement("b",new ArithmeticExpression("+",new VariableExpression("a"), new ValueExpression(new
                                         IntValue(1)))), new PrintStatement(new VariableExpression("b"))))) );
         controller.addState(ex2);
-        controller.allStates();
-        System.out.println("Program 2 result:\n" + controller.currentProgramState().toString());
+        controller.allSteps();
+        if(controller.getRepository().getCurrentProgramState().getExecutionStack().isEmpty())
+            System.out.println("Program 2 result:\n" + controller.currentProgramState().toString());
     }
 
-    public void thirdProgram() throws MyException{
+    public void thirdProgram() {
         IStatement ex3 = new CompoundStatement(new VariableDeclarationStatement("a",new BoolType()),
                 new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                         new CompoundStatement(new AssignStatement("a", new ValueExpression(new BoolValue(true))),
@@ -102,18 +106,20 @@ public class View {
                                         IntValue(2))), new AssignStatement("v", new ValueExpression(new IntValue(3)))), new PrintStatement(new
                                         VariableExpression("v"))))));
         controller.addState(ex3);
-        controller.allStates();
-        System.out.println("Program 3 result:\n" + controller.currentProgramState().toString());
+        controller.allSteps();
+        if(controller.getRepository().getCurrentProgramState().getExecutionStack().isEmpty())
+            System.out.println("Program 3 result:\n" + controller.currentProgramState().toString());
     }
 
-    public void error1()throws MyException{
+    public void error1(){
         IStatement ex4 = new CompoundStatement(new VariableDeclarationStatement("a", new IntType()), new CompoundStatement(new VariableDeclarationStatement("b", new BoolType()), new AssignStatement("a", new VariableExpression("b"))));
         controller.addState(ex4);
-        controller.allStates();
-        System.out.println("Program 4 result:\n" + controller.currentProgramState().toString());
+        controller.allSteps();
+        if(controller.getRepository().getCurrentProgramState().getExecutionStack().isEmpty())
+            System.out.println("Program 4 result:\n" + controller.currentProgramState().toString());
     }
 
-    public void allPrograms() throws MyException {
+    public void allPrograms() {
         firstProgram();
         secondProgram();
         thirdProgram();

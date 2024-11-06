@@ -21,12 +21,19 @@ public class Controller {
         IStatement statement = stack.pop();
         return statement.execute(state);
     }
-    public void allStates() throws MyException {
+    public void allSteps() {
         ProgramState state = repository.getCurrentProgramState();
-        while (!(state.getExecutionStack().isEmpty())){
+        try
+        {
+            while (!(state.getExecutionStack().isEmpty())) {
                 oneStep(state);
-                if(displayFlag)
+                if (displayFlag)
                     displayCurrentProgramState();
+            }
+        }
+        catch (MyException e)
+        {
+            System.out.println(e.getMessage() + '\n');
         }
     }
     public void displayAllStates(){
@@ -51,5 +58,9 @@ public class Controller {
     public void addState(IStatement statement){
         repository = new Repository();
         repository.addProgramState(new ProgramState(statement));
+    }
+
+    public Repository getRepository() {
+        return repository;
     }
 }

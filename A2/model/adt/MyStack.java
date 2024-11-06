@@ -42,12 +42,14 @@ public class MyStack<Elem> implements IMyStack<Elem> {
 
     public String toString() {
         String str = "";
-        for (Elem elem : stack) {
-            str += elem.toString()+'\n';
+
+        for (int i =stack.size()-1; i>=0; i--) {
+            str += (stack.get(i)).toString()+'\n';
         }
         return str;
     }
     public IMyStack<Elem> deepCopy(){
         return new MyStack<Elem>(stack);
     }
+
 }
