@@ -1,6 +1,7 @@
 package view;
 
 import controller.Controller;
+import exception.MyException;
 import model.expression.ArithmeticExpression;
 import model.expression.ValueExpression;
 import model.expression.VariableExpression;
@@ -35,13 +36,12 @@ public class View {
         System.out.println("6. Set display flag to false");
         System.out.println("7. Quit program");
     }
-    public void start() {
+    public void start() throws MyException{
 
         printMenu();
-
         Scanner scanner = new Scanner(System.in);
         int option = scanner.nextInt();
-        while (option != 7)
+        while (option != 8 )
         {
             switch (option) {
                 case 1:
@@ -62,6 +62,8 @@ public class View {
                 case 6:
                     controller.clearDisplayFlag();
                     break;
+                case 7:
+                    error1();
                 default:
                     System.out.println("Invalid option");
                     break;
@@ -71,7 +73,8 @@ public class View {
             option = scanner.nextInt();
         }
     }
-    public void firstProgram() {
+
+    public void firstProgram() throws MyException {
         IStatement ex1 = new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                 new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(2))), new PrintStatement(new VariableExpression("v"))));
         controller.addState(ex1);
@@ -79,7 +82,7 @@ public class View {
         System.out.println("Program 1 result:\n" + controller.currentProgramState().toString());
     }
 
-    public void secondProgram() {
+    public void secondProgram() throws MyException {
         IStatement ex2 = new CompoundStatement( new VariableDeclarationStatement("a",new IntType()),
                 new CompoundStatement(new VariableDeclarationStatement("b",new IntType()),
                         new CompoundStatement(new AssignStatement("a", new ArithmeticExpression("+",new ValueExpression(new IntValue(2)),new
@@ -91,7 +94,7 @@ public class View {
         System.out.println("Program 2 result:\n" + controller.currentProgramState().toString());
     }
 
-    public void thirdProgram() {
+    public void thirdProgram() throws MyException{
         IStatement ex3 = new CompoundStatement(new VariableDeclarationStatement("a",new BoolType()),
                 new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                         new CompoundStatement(new AssignStatement("a", new ValueExpression(new BoolValue(true))),
@@ -102,7 +105,15 @@ public class View {
         controller.allStates();
         System.out.println("Program 3 result:\n" + controller.currentProgramState().toString());
     }
-    public void allPrograms() {
+
+    public void error1()throws MyException{
+        IStatement ex4 = new CompoundStatement(new VariableDeclarationStatement("a", new IntType()), new CompoundStatement(new VariableDeclarationStatement("b", new BoolType()), new AssignStatement("a", new VariableExpression("b"))));
+        controller.addState(ex4);
+        controller.allStates();
+        System.out.println("Program 4 result:\n" + controller.currentProgramState().toString());
+    }
+
+    public void allPrograms() throws MyException {
         firstProgram();
         secondProgram();
         thirdProgram();

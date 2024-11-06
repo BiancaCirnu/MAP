@@ -21,17 +21,12 @@ public class Controller {
         IStatement statement = stack.pop();
         return statement.execute(state);
     }
-    public void allStates(){
+    public void allStates() throws MyException {
         ProgramState state = repository.getCurrentProgramState();
         while (!(state.getExecutionStack().isEmpty())){
-            try{
                 oneStep(state);
                 if(displayFlag)
                     displayCurrentProgramState();
-            }
-            catch (MyException e){
-                break;
-            }
         }
     }
     public void displayAllStates(){
