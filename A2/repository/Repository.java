@@ -1,6 +1,8 @@
 package repository;
 
+import exception.MyException;
 import model.programState.ProgramState;
+import repository.repositoryExceptions.listIsEmptyException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +17,22 @@ public class Repository {
     public void addProgramState(ProgramState programState) {
         programStateList.add(programState);
     }
-    public ProgramState getCurrentProgramState() {
-        return programStateList.get(currentProgramState);
-    }
+
     public List<ProgramState> getProgramStateList() {
         return programStateList;
     }
+    public ProgramState getCurrentProgramState() {
+        try{
+            if (programStateList.isEmpty())
+                throw new listIsEmptyException("the repo is empty");
+        }
+        catch (MyException e){
+            System.err.println(e.getMessage());
+        }
+        return programStateList.get(currentProgramState);
+    }
+    public void logPrgStateExec(){
+        //TODO
+    }
+
 }
