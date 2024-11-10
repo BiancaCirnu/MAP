@@ -21,21 +21,25 @@ public class OpenRFileStatement implements IStatement{
     }
     public ProgramState execute(ProgramState state) throws MyException {
         IValue fileNameValue = expression.evaluate(state.getSymbolTable());
-        if(!fileNameValue.getType().equals(new StringType()))
-            throw new ValueHasWrongTypeException("Value must be a string");
-        if(state.getFileTable().contains(((StringValue)fileNameValue).getValue()))
-            throw new MyException("File is already opened");
-        try{
-            BufferedReader opened = new BufferedReader(new FileReader(((StringValue)fileNameValue).getValue()));
-            state.getFileTable().insert(((StringValue)fileNameValue).getValue(), opened);
-        }
-        catch (IOException e)
-        {
-            throw new OpenFileException("Failed to open the file");
-        }
-        return state;
 
+        if (!(fileNameValue instanceof StringValue))
+            throw new ValueHasWrongTypeException("Expected StringValue for file name");
+
+        StringValue fileNameString = (StringValue) fileNameValue;
+
+        if (state.getFileTable().contains(fileNameString.getValue()))
+            throw new MyException("File is already opened");
+
+        try {
+            BufferedReader opened = new BufferedReader(new FileReader(fileNameString.getValue()));
+            state.getFileTable().insert(fileNameString.getValue(), opened);
+        } catch (IOException e) {
+            throw new OpenFileException("Failed to open the file: " + fileNameString.getValue());
+        }
+
+        return state;
     }
+
 
     public String toString(){
         return "fopen("+expression.toString()+")";
