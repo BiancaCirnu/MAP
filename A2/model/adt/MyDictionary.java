@@ -15,6 +15,9 @@ public class MyDictionary<Key, Value> implements IMyDictionary<Key, Value> {
         this.map = new HashMap<Key, Value>(map);
     }
 
+    public Map<Key, Value> getValues(){
+        return map;
+    }
     @Override
     public boolean contains(Key key) {
         return map.containsKey(key);

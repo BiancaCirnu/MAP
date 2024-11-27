@@ -19,7 +19,7 @@ public class AssignStatement implements IStatement {
             throw new ElementDoesNotExistException();
         }
         IType varType = state.getSymbolTable().getValue(variable).getType();
-        IValue exprValue = expression.evaluate(state.getSymbolTable());
+        IValue exprValue = expression.evaluate(state.getSymbolTable(), state.getHeap());
         if (!varType.equals(exprValue.getType()))
             throw new MyException("Variable '" + variable + "' does not match expression '" + expression + "'");
         else

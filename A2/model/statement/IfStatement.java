@@ -19,9 +19,9 @@ public class IfStatement implements IStatement {
     }
 
     public ProgramState execute(ProgramState state) throws MyException {
-        if(!(condition.evaluate(state.getSymbolTable()).getType()).equals(new BoolType()))
+        if(!(condition.evaluate(state.getSymbolTable(), state.getHeap()).getType()).equals(new BoolType()))
             throw new ValueHasWrongTypeException();
-        BoolValue res = (BoolValue) condition.evaluate(state.getSymbolTable());
+        BoolValue res = (BoolValue) condition.evaluate(state.getSymbolTable(), state.getHeap());
         if (res.equals(new BoolValue(true)))
             state.getExecutionStack().push(thenStatement);
         else

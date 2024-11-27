@@ -19,6 +19,7 @@ public class Repository {
         programStateList = new ArrayList<>();
         currentProgramState = 0;
         this.logfile = logfile;
+
     }
     public void addProgramState(ProgramState programState) {
         programStateList.add(programState);

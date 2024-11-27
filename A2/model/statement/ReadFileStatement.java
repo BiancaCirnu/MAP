@@ -25,14 +25,14 @@ public class ReadFileStatement implements IStatement{
         this.varName = varName;
     }
     public ProgramState execute(ProgramState state) throws MyException {
-        IValue fileNameValue = expression.evaluate(state.getSymbolTable());
+        IValue fileNameValue = expression.evaluate(state.getSymbolTable(), state.getHeap());
         if (!(fileNameValue instanceof StringValue)) {
             throw new ValueHasWrongTypeException("Expected StringValue for file name");
         }
         if(!fileNameValue.getType().equals(new StringType()))
             throw new ValueHasWrongTypeException("Value has to be a string");
         if (!state.getFileTable().contains(((StringValue) fileNameValue).getValue()))
-            throw new FileIsNotOpenException("File is not open");
+            throw new FileIsNotOpenException("");
         BufferedReader reader = state.getFileTable().getValue(((StringValue) fileNameValue).getValue());
         try{
             String line = reader.readLine();

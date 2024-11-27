@@ -18,19 +18,19 @@ public class CloseRFileStatement implements IStatement{
         this.expression = expression;
     }
     public ProgramState execute(ProgramState state) throws MyException {
-        IValue  fileNameValue = expression.evaluate(state.getSymbolTable());
+        IValue  fileNameValue = expression.evaluate(state.getSymbolTable(), state.getHeap());
         if(!fileNameValue.getType().equals(new StringType()))
             throw new ValueHasWrongTypeException("Value is not a string");
         StringValue filename = (StringValue) fileNameValue;
-        if(!state.getSymbolTable().contains(filename.getValue()))
-            throw new ElementDoesNotExistException("File is not opened");
+        if(!state.getFileTable().contains(((StringValue) fileNameValue).getValue()))
+            throw new ElementDoesNotExistException("");
         BufferedReader fileToClose  = state.getFileTable().getValue(filename.getValue());
         try
         {
             fileToClose.close();
             state.getFileTable().remove(filename.getValue());
         } catch (IOException e) {
-            throw new MyException("File was not opened");
+            throw new MyException("");
         }
         return state;
     }

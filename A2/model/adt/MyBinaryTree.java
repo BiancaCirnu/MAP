@@ -24,6 +24,5 @@ public class MyBinaryTree<T> implements IMyBinaryTree<T> {
             currentNode.right = new BTNode<T>(elem);
         else
             currentNode.left = new BTNode<T>(elem);
-
     }
 }

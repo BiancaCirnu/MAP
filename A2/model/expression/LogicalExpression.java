@@ -2,9 +2,12 @@ package model.expression;
 
 import exception.MyException;
 import model.adt.IMyDictionary;
+import model.adt.IMyHeap;
 import model.modelExceptions.InvalidOperatorException;
 import model.modelExceptions.ValueHasWrongTypeException;
 import model.type.BoolType;
+import model.type.IType;
+import model.type.IntType;
 import model.value.BoolValue;
 import model.value.IValue;
 import model.value.IntValue;
@@ -20,9 +23,9 @@ public class LogicalExpression implements IExpression {
         this.operator = operator;
         this.right = right;
     }
-    public IValue evaluate(IMyDictionary<String, IValue> symbolTable) throws MyException {
-        IValue leftValue = left.evaluate(symbolTable);
-        IValue rightValue = right.evaluate(symbolTable);
+    public IValue evaluate(IMyDictionary<String, IValue> symbolTable,IMyHeap heap) throws MyException {
+        IValue leftValue = left.evaluate(symbolTable, heap);
+        IValue rightValue = right.evaluate(symbolTable, heap);
         if(!leftValue.getType().equals(new BoolType()))
             throw new ValueHasWrongTypeException("left value is not a bool");
         if (!rightValue.getType().equals(new BoolType()))
@@ -40,5 +43,11 @@ public class LogicalExpression implements IExpression {
     }
     public String toString() {
         return left.toString() + " " + operator + " " + right.toString();
+    }
+
+
+    @Override
+    public IType typeCheck(IMyDictionary<String, IType> typeTable) throws MyException {
+        return new BoolType();
     }
 }

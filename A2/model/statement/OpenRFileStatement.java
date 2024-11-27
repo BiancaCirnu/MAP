@@ -20,7 +20,7 @@ public class OpenRFileStatement implements IStatement{
         this.expression = expression;
     }
     public ProgramState execute(ProgramState state) throws MyException {
-        IValue fileNameValue = expression.evaluate(state.getSymbolTable());
+        IValue fileNameValue = expression.evaluate(state.getSymbolTable(), state.getHeap());
 
         if (!(fileNameValue instanceof StringValue))
             throw new ValueHasWrongTypeException("Expected StringValue for file name");

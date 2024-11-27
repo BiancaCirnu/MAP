@@ -11,7 +11,7 @@ public class PrintStatement implements IStatement {
         this.expression = expression;
     }
     public ProgramState execute(ProgramState state) throws MyException {
-        IValue res = expression.evaluate(state.getSymbolTable());
+        IValue res = expression.evaluate(state.getSymbolTable(), state.getHeap());
         state.getOutput().add(res.toString());
         return state;
     }

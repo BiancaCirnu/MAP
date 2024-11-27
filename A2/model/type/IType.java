@@ -6,3 +6,4 @@ public interface IType {
     public boolean equals(IType other);
     public IValue getDefaultValue();
 }
+

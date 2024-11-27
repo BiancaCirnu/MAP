@@ -1,9 +1,12 @@
 package model.expression;
 
 import model.adt.IMyDictionary;
+import model.adt.IMyHeap;
 import model.modelExceptions.InvalidOperatorException;
 import exception.MyException;
 import model.modelExceptions.ValueHasWrongTypeException;
+import model.type.BoolType;
+import model.type.IType;
 import model.value.IValue;
 import model.value.IntValue;
 
@@ -32,9 +35,9 @@ public class ArithmeticExpression implements IExpression {
     }
 
     @Override
-    public IValue evaluate(IMyDictionary<String, IValue> symbolTable) throws MyException {
-        IValue firstVal = first.evaluate(symbolTable);
-        IValue secondVal = second.evaluate(symbolTable);
+    public IValue evaluate(IMyDictionary<String, IValue> symbolTable, IMyHeap heap) throws MyException {
+        IValue firstVal = first.evaluate(symbolTable, heap);
+        IValue secondVal = second.evaluate(symbolTable, heap);
         if(!(firstVal instanceof IntValue))
             throw new ValueHasWrongTypeException("first value is not an integer");
         if(!(secondVal instanceof IntValue))
@@ -69,5 +72,16 @@ public class ArithmeticExpression implements IExpression {
                 return first.toString() + " / " + second.toString();
         }
         return first.toString() + " " + operator.toString() + " " + second.toString();
+    }
+
+    @Override
+    public IType typeCheck(IMyDictionary<String, IType> symbolTable) throws MyException {
+        IType firstExpressionType = first.typeCheck(symbolTable);
+        IType secondExpressionType = second.typeCheck(symbolTable);
+        if (!firstExpressionType.equals(new BoolType()))
+            throw new MyException("First operand is not bool!");
+        if (!secondExpressionType.equals(new BoolType()))
+            throw new MyException("Second operand is not bool");
+        return new BoolType();
     }
 }
