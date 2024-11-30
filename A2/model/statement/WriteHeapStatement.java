@@ -41,6 +41,10 @@ public class WriteHeapStatement implements IStatement{
         }
 
         state.getHeap().updateValue(refValue.getAddress(), exprValue);
+        state.getSymbolTable().insert(variableName, new IntValue(refValue.getAddress()));
         return null;
+    }
+    public String toString(){
+        return "WriteHeap("+variableName+","+expression.toString()+")";
     }
 }

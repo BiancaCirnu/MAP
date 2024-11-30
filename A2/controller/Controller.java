@@ -161,22 +161,15 @@ public class Controller {
     }
 
     public void sixthProgram() {
-            IStatement ex = new CompoundStatement(
-            new VariableDeclarationStatement("v", new RefType(new IntType())),
-            new CompoundStatement(
-                    new AllocateStatement("v", new ValueExpression(new IntValue(20))),
-                    new CompoundStatement(
-                            new VariableDeclarationStatement("a", new RefType(new RefType(new IntType()))),
-                            new CompoundStatement(
-                                    new AllocateStatement("a", new VariableExpression("v")),
-                                    new CompoundStatement(
-                                            new AllocateStatement("v", new ValueExpression(new IntValue(30))),
-                                            new PrintStatement(new ReadHeapExpression(new ReadHeapExpression(new VariableExpression("a"))))
-                                    )
-                            )
-                    )
-            )
-        );
+        IStatement ex = new CompoundStatement(
+                new VariableDeclarationStatement("v", new RefType(new IntType())), new CompoundStatement(
+                new Allocate2Statement("v", new ValueExpression(new IntValue())), new CompoundStatement(
+                new WriteHeap2Statement("v", new ValueExpression(new IntValue(20))), new CompoundStatement(
+                new VariableDeclarationStatement("a", new RefType(new RefType(new IntType()))), new CompoundStatement(
+                new Allocate2Statement("a", new VariableExpression("v")), new CompoundStatement(
+                new WriteHeap2Statement("a", new VariableExpression("v")), new CompoundStatement(
+                new PrintStatement(new VariableExpression("a")), new PrintStatement(new VariableExpression("v")
+        ))))))));
         addState(ex);
         allSteps();
     }

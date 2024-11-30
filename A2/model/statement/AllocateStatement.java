@@ -8,6 +8,7 @@ import model.modelExceptions.ValuesHaveDifferentTypesException;
 import model.programState.ProgramState;
 import model.type.RefType;
 import model.value.IValue;
+import model.value.IntValue;
 import model.value.RefValue;
 
 public class AllocateStatement implements IStatement{
@@ -37,8 +38,7 @@ public class AllocateStatement implements IStatement{
         }
 
         int addressInHeap = state.getHeap().allocate(expressionValue);
-        state.getSymbolTable().insert(variableName, new RefValue(addressInHeap, variableType.getInner(), variableType.getDefaultValue()));
-
+        state.getSymbolTable().insert(variableName, new IntValue(addressInHeap));
         return state;
     }
 

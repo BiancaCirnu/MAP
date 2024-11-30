@@ -36,4 +36,8 @@ public class ReadHeapExpression implements IExpression{
             throw new MyException("Read Heap expression is not of type reference!");
         return ((RefType) expressionType).getInner();
     }
+
+    public String toString(){
+        return "ReadHeap(" + expression.toString()+")";
+    }
 }
