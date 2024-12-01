@@ -29,6 +29,6 @@ public class RefValue implements IValue{
     }
     public String toString()
     {
-        return value.toString();
+        return "->"+address;
     }
 }

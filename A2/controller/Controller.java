@@ -162,15 +162,24 @@ public class Controller {
 
     public void sixthProgram() {
         IStatement ex = new CompoundStatement(
-                new VariableDeclarationStatement("v", new RefType(new IntType())), new CompoundStatement(
-                new Allocate2Statement("v", new ValueExpression(new IntValue())), new CompoundStatement(
-                new WriteHeap2Statement("v", new ValueExpression(new IntValue(20))), new CompoundStatement(
-                new VariableDeclarationStatement("a", new RefType(new RefType(new IntType()))), new CompoundStatement(
-                new Allocate2Statement("a", new VariableExpression("v")), new CompoundStatement(
-                new WriteHeap2Statement("a", new VariableExpression("v")), new CompoundStatement(
-                new PrintStatement(new VariableExpression("a")), new PrintStatement(new VariableExpression("v")
-        ))))))));
-        addState(ex);
+                new VariableDeclarationStatement("v", new RefType(new IntType())), // Declare 'v' as a reference to an int
+                new CompoundStatement(
+                        new AllocateStatement("v", new ValueExpression(new IntValue(20))), // Allocate memory for 'v' with value 20
+                        new CompoundStatement(
+                                new PrintStatement(new ReadHeapExpression(new VariableExpression("v"))), // Print the value read from the heap at 'v'
+                                new CompoundStatement(
+                                        new WriteHeapStatement("v", new ValueExpression(new IntValue(30))), // Write 30 into the heap location referenced by 'v'
+                                        new PrintStatement(new ArithmeticExpression(
+                                                "+",
+                                                new ReadHeapExpression(new VariableExpression("v")), // Read the value at 'v'
+                                                new ValueExpression(new IntValue(5)) // Add 5
+                                        )) // Print the result of reading the heap and adding 5
+                                )
+                        )
+                )
+        );
+
+        addState(ex); // Add this statement to the program's state
         allSteps();
     }
     public void seventhProgram()
@@ -211,4 +220,14 @@ public class Controller {
         addState(ex);
         allSteps();
     }
+    public void ninthProgram(){
+        IStatement ex = new CompoundStatement(new VariableDeclarationStatement("v", new RefType(new IntType())),
+                new CompoundStatement( new AllocateStatement("v", new ValueExpression(new IntValue(20))),
+                new CompoundStatement( new VariableDeclarationStatement("a",new RefType(new RefType(new IntType()))), new CompoundStatement(new AllocateStatement("a",new VariableExpression("v")),
+                new CompoundStatement(new PrintStatement(new ReadHeapExpression(new VariableExpression("v"))), new PrintStatement(new ArithmeticExpression("+", new ReadHeapExpression(new ReadHeapExpression(new VariableExpression("a"))), new ValueExpression(new IntValue(5))))
+                )))));
+        addState(ex);
+        allSteps();
+    }
 }
+

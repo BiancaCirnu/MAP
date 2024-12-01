@@ -6,45 +6,37 @@ import model.modelExceptions.ElementDoesNotExistException;
 import model.modelExceptions.ValuesHaveDifferentTypesException;
 import model.programState.ProgramState;
 import model.type.IType;
-import model.type.RefType;
 import model.value.IValue;
-import model.value.IntValue;
 import model.value.RefValue;
 
 public class WriteHeapStatement implements IStatement{
-    private final String variableName;
-    private final IExpression expression;
-    public WriteHeapStatement(String varName, IExpression expr){
-        variableName = varName;
-        expression = expr;
+    String variableName;
+    IExpression expression;
+    public WriteHeapStatement(String variableName, IExpression expression){
+        this.variableName = variableName;
+        this.expression = expression;
     }
-
     @Override
     public ProgramState execute(ProgramState state) throws MyException {
-        if (!state.getSymbolTable().contains(variableName)) {
-            throw new ElementDoesNotExistException("Variable '" + variableName + "' does not exist in the symbol table.");
-        }
-
-        IValue variableValue = state.getSymbolTable().getValue(variableName);
-        if (!(variableValue instanceof RefValue)) {
-            throw new ValuesHaveDifferentTypesException("Variable '" + variableName + "' is not a reference type.");
-        }
-
-        RefValue refValue = (RefValue) variableValue;
-        if (!state.getHeap().contains(refValue.getAddress())) {
-            throw new MyException("Heap does not contain the specified address: " + refValue.getAddress());
-        }
-
-        IValue exprValue = expression.evaluate(state.getSymbolTable(), state.getHeap());
-        if (!exprValue.getType().equals(refValue.getLocationType())) {
-            throw new ValuesHaveDifferentTypesException("Type of the evaluated expression does not match the referenced type.");
-        }
-
-        state.getHeap().updateValue(refValue.getAddress(), exprValue);
-        state.getSymbolTable().insert(variableName, new IntValue(refValue.getAddress()));
-        return null;
+        // check if it is in the symbol table
+        if(!state.getSymbolTable().contains(variableName))
+            throw new ElementDoesNotExistException("The element is not declared");
+        // check if its type is refValue
+        IValue v = state.getSymbolTable().getValue(variableName);
+        // check if it is in the hashTable
+        int heapIndex = ((RefValue)(v)).getAddress();
+        if(!state.getHeap().contains(heapIndex))
+            throw new ElementDoesNotExistException("wh exception 2");
+        // evaluate the expression and check if the type is the same as the location type
+        IValue evaluatedExpression = expression.evaluate(state.getSymbolTable(), state.getHeap());
+        IType t = state.getHeap().getValue(heapIndex).getType();
+        if(!evaluatedExpression.getType().equals(state.getHeap().getValue(heapIndex).getType()))
+            throw new ValuesHaveDifferentTypesException("wh exception 3");
+        state.getHeap().updateValue(heapIndex, evaluatedExpression);
+        return  null;
     }
+
     public String toString(){
-        return "WriteHeap("+variableName+","+expression.toString()+")";
+        return "writeHeap("+ variableName+","+expression.toString()+")";
     }
 }

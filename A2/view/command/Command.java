@@ -8,5 +8,6 @@ public abstract class Command {
     }
     public abstract void execute();
     public String getKey(){return key;}
-    public String getDescription(){return description;}
+    public String getDescription(){return description;
+    }
 }
