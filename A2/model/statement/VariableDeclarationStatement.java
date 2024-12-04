@@ -19,7 +19,7 @@ public class VariableDeclarationStatement implements IStatement{
             throw new ElementExistsException();
         else
             state.getSymbolTable().insert(variableName, variableType.getDefaultValue());
-        return state;
+        return null;
     }
 
     public String toString() {

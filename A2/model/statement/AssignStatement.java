@@ -24,7 +24,7 @@ public class AssignStatement implements IStatement {
             throw new MyException("Variable '" + variable + "' does not match expression '" + expression + "'");
         else
             state.getSymbolTable().insert(variable, exprValue);
-        return state;
+        return null;
     }
     public String toString() {
         return variable + " = " + expression;

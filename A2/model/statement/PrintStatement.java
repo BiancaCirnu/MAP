@@ -13,7 +13,7 @@ public class PrintStatement implements IStatement {
     public ProgramState execute(ProgramState state) throws MyException {
         IValue res = expression.evaluate(state.getSymbolTable(), state.getHeap());
         state.getOutput().add(res.toString());
-        return state;
+        return null;
     }
     public String toString() {
         return "print("+expression.toString()+")";

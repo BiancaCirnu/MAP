@@ -26,21 +26,12 @@ public class Controller {
         displayFlag = false;
     }
 
-    public ProgramState oneStep(ProgramState state) throws MyException {
-        IMyStack<IStatement> stack = state.getExecutionStack();
-        if (stack.isEmpty()) {
-            throw new MyException("Stack is empty");
-        }
-        IStatement statement = stack.pop();
-        return statement.execute(state);
-    }
-
     public void allSteps() {
         try {
-            ProgramState state = repository.getCurrentProgramState();
+            ProgramState state = repository.getProgramStateList().get(0);
             repository.logPrgStateExec(state);
             while (!(state.getExecutionStack().isEmpty())) {
-                oneStep(state);
+                state.oneStep();
                 if (displayFlag)
                     displayCurrentProgramState();
                 state.getHeap().setContent(garbageCollector(state.getSymbolTable(), state.getHeap().getElements()));
@@ -59,7 +50,7 @@ public class Controller {
     }
 
     public ProgramState currentProgramState() {
-        return repository.getCurrentProgramState();
+        return repository.getProgramStateList().get(0);
     }
 
     public void setDisplayFlag() {
@@ -71,7 +62,7 @@ public class Controller {
     }
 
     public void displayCurrentProgramState() {
-        System.out.println(repository.getCurrentProgramState().toString() + "\n__________________________________\n");
+        System.out.println(repository.getProgramStateList().get(0).toString() + "\n__________________________________\n");
 
     }
 

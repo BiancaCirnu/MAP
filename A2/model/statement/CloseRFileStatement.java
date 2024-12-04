@@ -32,7 +32,7 @@ public class CloseRFileStatement implements IStatement{
         } catch (IOException e) {
             throw new MyException("");
         }
-        return state;
+        return null;
     }
 
     public String toString()

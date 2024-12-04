@@ -8,5 +8,4 @@ import model.value.IValue;
 
 public interface IExpression {
     IValue evaluate(IMyDictionary<String, IValue> symbolTable,  IMyHeap heap) throws MyException;
-    public IType typeCheck(IMyDictionary<String, IType> typeTable) throws MyException;
 }

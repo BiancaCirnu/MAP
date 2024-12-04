@@ -15,11 +15,6 @@ public class VariableExpression implements IExpression {
         return symbolTable.getValue(variable);
     }
 
-    @Override
-    public IType typeCheck(IMyDictionary<String, IType> symbolTable) throws MyException {
-        return symbolTable.getValue(variable).getDefaultValue().getType();
-    }
-
     public String toString() {
         return variable;
     }

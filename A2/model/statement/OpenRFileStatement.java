@@ -37,7 +37,7 @@ public class OpenRFileStatement implements IStatement{
             throw new OpenFileException("Failed to open the file: " + fileNameString.getValue());
         }
 
-        return state;
+        return null;
     }
 
 

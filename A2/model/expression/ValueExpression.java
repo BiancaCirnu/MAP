@@ -17,10 +17,7 @@ public class ValueExpression implements IExpression {
         return value;
     }
 
-    @Override
-    public IType typeCheck(IMyDictionary<String, IType> typeTable) throws MyException {
-        return value.getType();
-    }
+
 
     public IType getType(MyDictionary<String, IType> symbolTable) {
         return value.getType();

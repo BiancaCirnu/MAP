@@ -30,7 +30,7 @@ public class WhileStatement implements IStatement{
             state.getExecutionStack().push(this);
             state.getExecutionStack().push(body);
         }
-        return state;
+        return null;
     }
     public String toString(){
         String s = "while(" + expression.toString()+") {"+body.toString()+"}";

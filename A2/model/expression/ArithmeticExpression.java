@@ -74,14 +74,5 @@ public class ArithmeticExpression implements IExpression {
         return first.toString() + " " + operator.toString() + " " + second.toString();
     }
 
-    @Override
-    public IType typeCheck(IMyDictionary<String, IType> symbolTable) throws MyException {
-        IType firstExpressionType = first.typeCheck(symbolTable);
-        IType secondExpressionType = second.typeCheck(symbolTable);
-        if (!firstExpressionType.equals(new BoolType()))
-            throw new MyException("First operand is not bool!");
-        if (!secondExpressionType.equals(new BoolType()))
-            throw new MyException("Second operand is not bool");
-        return new BoolType();
-    }
+
 }

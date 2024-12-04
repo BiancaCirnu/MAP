@@ -12,7 +12,7 @@ public class CompoundStatement implements IStatement {
     public ProgramState execute(ProgramState state) throws MyException {
         state.getExecutionStack().push(secondStatement);
         state.getExecutionStack().push(firstStatement);
-        return state;
+        return null;
     }
     public String toString(){
         return  firstStatement.toString() + "; " + secondStatement.toString() ;

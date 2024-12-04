@@ -46,8 +46,5 @@ public class LogicalExpression implements IExpression {
     }
 
 
-    @Override
-    public IType typeCheck(IMyDictionary<String, IType> typeTable) throws MyException {
-        return new BoolType();
-    }
+
 }

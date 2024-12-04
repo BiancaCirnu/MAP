@@ -25,10 +25,6 @@ public class ReadHeapExpression implements IExpression{
 
     }
 
-    @Override
-    public IType typeCheck(IMyDictionary<String, IType> typeTable) throws MyException {
-        return null;
-    }
     public String toString(){
         return "readHeap("+expression+")";
     }

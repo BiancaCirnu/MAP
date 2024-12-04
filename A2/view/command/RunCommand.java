@@ -33,15 +33,19 @@ public class RunCommand extends Command{
             case "6":
                 c = new Controller(new Repository("log6.txt"));
                 c.sixthProgram();
+                break;
             case "7":
                 c = new Controller(new Repository("log7.txt"));
                 c.seventhProgram();
+                break;
             case "8":
                 c = new Controller(new Repository("log8.txt"));
                 c.eightProgram();
+                break;
             case "9":
-                  c = new Controller(new Repository("log9.txt"));
+                c = new Controller(new Repository("log9.txt"));
                 c.ninthProgram();
+                break;
         }
     }
 }

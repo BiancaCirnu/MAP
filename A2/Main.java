@@ -1,6 +1,6 @@
 import exception.MyException;
 import view.TextMenu;
-import view.View;
+
 import view.command.*;
 
 public class Main {
@@ -14,8 +14,8 @@ public class Main {
         menu.addCommand(new RunCommand("5", "Run program 5"));
         menu.addCommand(new RunCommand("6", "Run program 6"));
         menu.addCommand(new RunCommand("7", "Run program 7"));
-        menu.addCommand(new RunCommand("8", "Run program 8")); //while
-        menu.addCommand(new RunCommand("9", "Run program 9")); //while
+        menu.addCommand(new RunCommand("8", "Run program 8"));
+        menu.addCommand(new RunCommand("9", "Run program 9")); 
 
         menu.show();
     }

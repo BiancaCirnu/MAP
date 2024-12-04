@@ -43,7 +43,7 @@ public class ReadFileStatement implements IStatement{
         }catch (IOException e) {
             new AssignStatement(varName, new ValueExpression(new IntValue(0))).execute(state);
         }
-        return state;
+        return null;
     }
 
     @Override

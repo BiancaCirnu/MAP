@@ -43,10 +43,6 @@ public class RelationalExpression implements IExpression {
         }
     }
 
-    @Override
-    public IType typeCheck(IMyDictionary<String, IType> typeTable) throws MyException {
-        return new BoolType();
-    }
 
     public String toString(){
         String op;

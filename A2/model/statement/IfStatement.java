@@ -26,7 +26,7 @@ public class IfStatement implements IStatement {
             state.getExecutionStack().push(thenStatement);
         else
             state.getExecutionStack().push(elseStatement);
-        return state;
+        return null;
     }
     public String toString() {
         return "if " + condition.toString() + " then " + thenStatement.toString() + " else " + elseStatement.toString();
