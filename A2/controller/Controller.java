@@ -11,11 +11,17 @@ import model.value.*;
 import repository.Repository;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class Controller {
     Repository repository;
     boolean displayFlag;
-
+    ExecutorService executor;
     public Controller() {
         repository = new Repository("test.in");
         displayFlag = true;
@@ -25,23 +31,73 @@ public class Controller {
         this.repository = programs;
         displayFlag = false;
     }
+    public void oneStepForAllPrograms(List<ProgramState> programStates)
+    {
 
-    public void allSteps() {
+            programStates.forEach(programState -> {
+                try {
+                    repository.logPrgStateExec(programState);
+                } catch (MyException e) {
+                    System.out.println(e.getMessage());
+                }
+            });
+            List<Callable<ProgramState>> callList = programStates.stream().map((ProgramState p
+            ) -> (Callable<ProgramState>) (() -> {
+                return p.oneStep();
+            })).collect(Collectors.toList());
+        List<ProgramState> newProgramList = null;
         try {
-            ProgramState state = repository.getProgramStateList().get(0);
-            repository.logPrgStateExec(state);
-            while (!(state.getExecutionStack().isEmpty())) {
-                state.oneStep();
-                if (displayFlag)
-                    displayCurrentProgramState();
-                state.getHeap().setContent(garbageCollector(state.getSymbolTable(), state.getHeap().getElements()));
-                repository.logPrgStateExec(state);
-            }
-        } catch (MyException e) {
-            System.out.println(e.getMessage() + '\n');
+            newProgramList = executor.invokeAll(callList).stream().map(future -> {
+                try {
+                    return future.get();
+                } catch (ExecutionException | InterruptedException e) {
+                    System.out.println(e.getMessage());
+                }
+                return null;
+            }).filter(p -> p != null).collect(Collectors.toList());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+        programStates.addAll(newProgramList);
+            programStates.forEach(programState -> {
+                try {
+                    repository.logPrgStateExec(programState);
+                } catch (MyException e) {
+                    System.out.println(e.getMessage());
+                }
+            });
+            repository.setProgramStateList(programStates);
+
 
     }
+
+    void allSteps(){
+        executor = Executors.newFixedThreadPool(2);
+        List<ProgramState> programList = removeCompletedPrograms(repository.getProgramStateList());
+        while(programList.size()>0){
+            oneStepForAllPrograms(programList);
+            programList = removeCompletedPrograms(repository.getProgramStateList());
+        }
+        executor.shutdownNow();
+        repository.setProgramStateList(programList);
+    }
+
+//    public void allSteps() {
+//        try {
+//            ProgramState state = repository.getProgramStateList().get(0);
+//            repository.logPrgStateExec(state);
+//            while (!(state.getExecutionStack().isEmpty())) {
+//                state.oneStep();
+//                if (displayFlag)
+//                    displayCurrentProgramState();
+//                state.getHeap().setContent(garbageCollector(state.getSymbolTable(), state.getHeap().getElements()));
+//                repository.logPrgStateExec(state);
+//            }
+//        } catch (MyException e) {
+//            System.out.println(e.getMessage() + '\n');
+//        }
+//
+//    }
 
     public void displayAllStates() {
         for (ProgramState state : repository.getProgramStateList())
@@ -61,8 +117,9 @@ public class Controller {
         displayFlag = false;
     }
 
-    public void displayCurrentProgramState() {
-        System.out.println(repository.getProgramStateList().get(0).toString() + "\n__________________________________\n");
+    public void displayCurrentProgramStates() {
+        for(var p: repository.getProgramStateList())
+            System.out.println(p.toString() + "\n__________________________________\n");
 
     }
 
@@ -74,13 +131,17 @@ public class Controller {
         return repository;
     }
 
+    public List<ProgramState> removeCompletedPrograms(List<ProgramState> programStatesList)
+    {
+        return programStatesList.stream().filter(programState -> programState.isNotCompleted()).collect(Collectors.toList());
+    }
     //HARDCODED EXAMPLES
 
     public void firstProgram() {
         IStatement ex1 = new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                 new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(2))), new PrintStatement(new VariableExpression("v"))));
         addState(ex1);
-        allSteps();
+        oneStepForAllPrograms(repository.getProgramStateList());
     }
 
     public void secondProgram() {
@@ -220,5 +281,22 @@ public class Controller {
         addState(ex);
         allSteps();
     }
+    public void tenthProgram() {
+        IStatement ex = new CompoundStatement(
+                new VariableDeclarationStatement("v", new IntType()), // Declare variable 'v'
+                new CompoundStatement(new VariableDeclarationStatement("a", new RefType(new IntType())), // Declare reference 'a'
+                new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(10))), // Assign 'v' = 10
+                new CompoundStatement(new AllocateStatement("a", new ValueExpression(new IntValue(22))), // Allocate memory for 'a' with value 22
+                new CompoundStatement(new ForkStatement(new CompoundStatement(new WriteHeapStatement("a", new ValueExpression(new IntValue(30))), // Modify heap at 'a'
+                new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(32))), // Assign 'v' = 32
+                new CompoundStatement(new PrintStatement(new VariableExpression("v")),new PrintStatement(new ReadHeapExpression(new VariableExpression("a"))) // Print value in heap at 'a'
+                )))), new CompoundStatement(new PrintStatement(new VariableExpression("v")), // Print 'v' in main thread
+                new PrintStatement(new ReadHeapExpression(new VariableExpression("a"))) // Print value in heap at 'a' in main thread
+                ))))));
+
+        addState(ex);
+        allSteps();
+    }
+
 }
 

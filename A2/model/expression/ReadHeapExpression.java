@@ -22,7 +22,6 @@ public class ReadHeapExpression implements IExpression{
         if(!heap.contains(((RefValue)(evaluatedExpression)).getAddress()))
             throw new ElementDoesNotExistException("");
         return heap.getValue(((RefValue)(evaluatedExpression)).getAddress());
-
     }
 
     public String toString(){

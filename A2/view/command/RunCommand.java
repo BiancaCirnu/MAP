@@ -46,6 +46,10 @@ public class RunCommand extends Command{
                 c = new Controller(new Repository("log9.txt"));
                 c.ninthProgram();
                 break;
+            case "10":
+                c = new Controller(new Repository("log10.txt"));
+                c.tenthProgram();
+                break;
         }
     }
 }

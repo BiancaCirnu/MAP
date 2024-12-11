@@ -48,8 +48,20 @@ public class MyStack<Elem> implements IMyStack<Elem> {
         }
         return str;
     }
-    public IMyStack<Elem> deepCopy(){
-        return new MyStack<Elem>(stack);
+    public IMyStack<Elem> deepCopy() {
+        MyStack<Elem> newStack = new MyStack<>();
+        Stack<Elem> tempStack = new Stack<>();
+        while (!stack.isEmpty()) {
+            Elem elem = stack.pop();
+            tempStack.push(elem);
+        }
+        while (!tempStack.isEmpty()) {
+            Elem elem = tempStack.pop();
+            stack.push(elem);
+            newStack.push(elem);
+        }
+
+        return newStack;
     }
 
 }

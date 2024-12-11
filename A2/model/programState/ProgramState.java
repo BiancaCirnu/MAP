@@ -13,14 +13,16 @@ public class ProgramState implements IProgramState {
     IMyList<String> output;
     IMyDictionary<String, BufferedReader> fileTable;
     IMyHeap heap;
-    public static int programId = 0;
+    public static int currentID = 0;
+    int programId;
     public ProgramState(){
         symbolTable = new MyDictionary<String, IValue>();
         executionStack = new MyStack<IStatement>();
         output = new MyList<>();
         fileTable = new MyDictionary<>();
         heap = new MyHeap();
-        programId += 1;
+        currentID += 1;
+        programId = currentID ;
     }
 
     public ProgramState(IStatement statement){
@@ -29,7 +31,8 @@ public class ProgramState implements IProgramState {
         this.output = new MyList<>();
         this.fileTable = new MyDictionary<>();
         this.heap = new MyHeap();
-        programId += 1;
+        currentID += 1;
+        programId = currentID ;
 
         executionStack.push(statement);
     }
@@ -40,8 +43,8 @@ public class ProgramState implements IProgramState {
         this.output = output;
         this.fileTable = fileTable;
         this.heap = heap;
-        programId += 1;
-    }
+        currentID += 1;
+        programId = currentID ;    }
 
     //getters
     public IMyDictionary<String, IValue> getSymbolTable(){
@@ -70,7 +73,7 @@ public class ProgramState implements IProgramState {
     }
 
     public Boolean isNotCompleted(){
-        return (!executionStack.isEmpty());
+        return !(executionStack.isEmpty());
     }
     public ProgramState oneStep() throws MyException {
         IMyStack<IStatement> stack = this.getExecutionStack();

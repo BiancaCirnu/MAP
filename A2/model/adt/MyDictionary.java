@@ -50,7 +50,11 @@ public class MyDictionary<Key, Value> implements IMyDictionary<Key, Value> {
         }
         return str;
     }
-    public IMyDictionary<Key, Value> deepCopy(){
-        return new MyDictionary<>(map);
+    public IMyDictionary<Key, Value> deepCopy() {
+        MyDictionary<Key, Value> copy = new MyDictionary<>();
+        for (Map.Entry<Key, Value> entry : map.entrySet()) {
+           copy.insert(entry.getKey(), entry.getValue());
+        }
+        return copy;
     }
 }

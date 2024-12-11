@@ -1,6 +1,8 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyStack;
+import model.adt.MyStack;
 import model.programState.ProgramState;
 
 public class ForkStatement implements IStatement{
@@ -10,9 +12,13 @@ public class ForkStatement implements IStatement{
     };
     @Override
     public ProgramState execute(ProgramState state) throws MyException {
-        statement.execute(state);
-        ProgramState newThread = new ProgramState(state.getSymbolTable().deepCopy(), state.getExecutionStack().deepCopy(),
+        IMyStack myStackCopy  =new MyStack();
+        myStackCopy.push(statement);
+        ProgramState newThread = new ProgramState(state.getSymbolTable().deepCopy(),myStackCopy,
                 state.getOutput(), state.getFileTable(), state.getHeap());
         return newThread;
+    }
+    public String toString(){
+        return "fork(" + statement.toString() + ")";
     }
 }
