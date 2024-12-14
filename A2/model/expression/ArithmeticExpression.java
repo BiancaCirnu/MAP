@@ -7,6 +7,7 @@ import exception.MyException;
 import model.modelExceptions.ValueHasWrongTypeException;
 import model.type.BoolType;
 import model.type.IType;
+import model.type.IntType;
 import model.value.IValue;
 import model.value.IntValue;
 
@@ -58,6 +59,18 @@ public class ArithmeticExpression implements IExpression {
             default:
                 throw new InvalidOperatorException();
         }
+    }
+
+    @Override
+    public IType typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        IType type1, type2;
+        type1 = first.typeCheck(typeEnvironment);
+        type2 = second.typeCheck(typeEnvironment);
+        if(!type1.equals(new IntType()))
+            throw new ValueHasWrongTypeException("First expression doesn't return an integer");
+        if(!type2.equals(new IntType()))
+            throw new ValueHasWrongTypeException("Second expression doesn't return an integer");
+        return new IntType();
     }
 
     public String toString(){

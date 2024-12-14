@@ -4,8 +4,10 @@ import exception.MyException;
 import model.adt.IMyDictionary;
 import model.adt.IMyHeap;
 import model.modelExceptions.ElementDoesNotExistException;
+import model.modelExceptions.ValueHasWrongTypeException;
 import model.modelExceptions.ValuesHaveDifferentTypesException;
 import model.type.IType;
+import model.type.RefType;
 import model.value.IValue;
 import model.value.RefValue;
 
@@ -22,6 +24,13 @@ public class ReadHeapExpression implements IExpression{
         if(!heap.contains(((RefValue)(evaluatedExpression)).getAddress()))
             throw new ElementDoesNotExistException("");
         return heap.getValue(((RefValue)(evaluatedExpression)).getAddress());
+    }
+
+    @Override
+    public IType typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if(!(expression.typeCheck(typeEnvironment) instanceof RefType))
+            throw new ValueHasWrongTypeException("expression has to be a reference");
+        return ((RefType) expression.typeCheck(typeEnvironment)).getInner();
     }
 
     public String toString(){

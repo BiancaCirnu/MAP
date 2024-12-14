@@ -43,6 +43,15 @@ public class RelationalExpression implements IExpression {
         }
     }
 
+    @Override
+    public IType typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if(!left.typeCheck(typeEnvironment).equals(new IntType()))
+            throw new ValueHasWrongTypeException("Operand has to be of type int");
+        if(!right.typeCheck(typeEnvironment).equals(new IntType()))
+            throw new ValueHasWrongTypeException("Operand has to be of type int");
+        return new BoolType();
+    }
+
 
     public String toString(){
         String op;

@@ -20,5 +20,7 @@ public interface IMyHeap {
     public HashMap<Integer, IValue> getElements();
 
     public void setContent( HashMap<Integer, IValue> elems);
+
+    public void deallocate(Integer v);
 }
 

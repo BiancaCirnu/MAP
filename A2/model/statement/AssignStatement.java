@@ -1,8 +1,10 @@
 package model.statement;
 
+import model.adt.IMyDictionary;
 import model.expression.IExpression;
 import model.modelExceptions.ElementDoesNotExistException;
 import exception.MyException;
+import model.modelExceptions.ValueHasWrongTypeException;
 import model.programState.ProgramState;
 import model.type.IType;
 import model.value.IValue;
@@ -28,5 +30,14 @@ public class AssignStatement implements IStatement {
     }
     public String toString() {
         return variable + " = " + expression;
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        IType typeVar = typeEnvironment.getValue(variable);
+        IType typeExpression = expression.typeCheck(typeEnvironment);
+        if(typeExpression.equals(typeVar))
+            return typeEnvironment;
+        throw new ValueHasWrongTypeException("Variable and expression must have the same type");
     }
 }

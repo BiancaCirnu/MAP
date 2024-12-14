@@ -17,6 +17,8 @@ public class Main {
         menu.addCommand(new RunCommand("8", "Run program 8"));
         menu.addCommand(new RunCommand("9", "Run program 9")); 
         menu.addCommand(new RunCommand("10", "Run program 10"));
+        menu.addCommand(new RunCommand("11", "Run program 11"));
+        menu.addCommand(new RunCommand("12", "Run program 12"));
 
         menu.show();
     }

@@ -1,7 +1,10 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
+import model.adt.MyDictionary;
 import model.programState.ProgramState;
+import model.type.IType;
 
 public class CompoundStatement implements IStatement {
     private IStatement firstStatement, secondStatement;
@@ -16,6 +19,13 @@ public class CompoundStatement implements IStatement {
     }
     public String toString(){
         return  firstStatement.toString() + "; " + secondStatement.toString() ;
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        IMyDictionary<String, IType> typeEnvironment1 = firstStatement.typeCheck(typeEnvironment);
+        IMyDictionary<String, IType> typeEnvironment2 = secondStatement.typeCheck(typeEnvironment1);
+        return  typeEnvironment2;
     }
 
 }

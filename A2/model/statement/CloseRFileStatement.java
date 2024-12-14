@@ -1,10 +1,12 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
 import model.expression.IExpression;
 import model.modelExceptions.ElementDoesNotExistException;
 import model.modelExceptions.ValueHasWrongTypeException;
 import model.programState.ProgramState;
+import model.type.IType;
 import model.type.StringType;
 import model.value.IValue;
 import model.value.StringValue;
@@ -38,5 +40,12 @@ public class CloseRFileStatement implements IStatement{
     public String toString()
     {
         return "fclose("+expression.toString()+")";
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if(!expression.typeCheck(typeEnvironment).equals(new StringType()))
+            throw new ValueHasWrongTypeException("expression must return a string");
+        return typeEnvironment;
     }
 }

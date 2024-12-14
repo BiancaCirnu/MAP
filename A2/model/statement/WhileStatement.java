@@ -1,6 +1,7 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
 import model.adt.MyStack;
 import model.expression.IExpression;
 import model.modelExceptions.ValueHasWrongTypeException;
@@ -35,5 +36,12 @@ public class WhileStatement implements IStatement{
     public String toString(){
         String s = "while(" + expression.toString()+") {"+body.toString()+"}";
         return s;
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if(!expression.typeCheck(typeEnvironment).equals(new BoolType()))
+            throw new ValueHasWrongTypeException("The expression must return a bool value");
+        return body.typeCheck(typeEnvironment);
     }
 }

@@ -44,4 +44,14 @@ public class AllocateStatement implements IStatement {
     public String toString(){
         return "allocate("+variableName+","+expression+")";
     }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        IType typeVar = typeEnvironment.getValue(variableName);
+        IType typeExpr = expression.typeCheck(typeEnvironment);
+        if(!typeVar.equals(new RefType(typeExpr)))
+            throw new ValueHasWrongTypeException("AllocateStatementError typeCheck");
+        return typeEnvironment;
+
+    }
 }

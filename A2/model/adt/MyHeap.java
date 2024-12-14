@@ -19,6 +19,12 @@ public class MyHeap implements IMyHeap {
     public void setContent( HashMap<Integer, IValue> elems){
         elements = elems;
     }
+
+    @Override
+    public void deallocate(Integer v) {
+        elements.remove(v);
+    }
+
     public IValue getValue(Integer key){
         return elements.get(key);
     }

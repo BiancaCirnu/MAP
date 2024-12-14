@@ -1,9 +1,11 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
 import model.adt.IMyStack;
 import model.adt.MyStack;
 import model.programState.ProgramState;
+import model.type.IType;
 
 public class ForkStatement implements IStatement{
     IStatement statement;
@@ -20,5 +22,11 @@ public class ForkStatement implements IStatement{
     }
     public String toString(){
         return "fork(" + statement.toString() + ")";
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        IMyDictionary<String, IType> typeEnv1 = statement.typeCheck(typeEnvironment);
+        return typeEnv1;
     }
 }

@@ -2,6 +2,7 @@ package controller;
 
 import exception.MyException;
 import model.adt.IMyDictionary;
+import model.adt.IMyHeap;
 import model.adt.IMyStack;
 import model.expression.*;
 import model.programState.ProgramState;
@@ -10,8 +11,7 @@ import model.type.*;
 import model.value.*;
 import repository.Repository;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -71,10 +71,55 @@ public class Controller {
 
     }
 
+    public HashMap<Integer, IValue> garbageCollector(IMyDictionary<String, IValue> symTable,  HashMap<Integer, IValue> heap){
+
+        for (IValue val : symTable.getValues().values()) {
+            if (val instanceof RefValue) {
+                int address = ((RefValue) val).getAddress();
+                if (heap.containsKey(address)) {
+                    heap.put(address, heap.get(address));
+                }
+
+                if(val.getType() instanceof RefValue) {
+                    if(heap.containsKey(address)) {
+                        IValue value = heap.get(address);
+                        while(value instanceof RefValue) {
+                            int address2 = ((RefValue) value).getAddress();
+                            if(heap.containsKey(address2)) {
+                                heap.put(address2, heap.get(address2));
+                            }
+                            value = heap.get(address2);
+                        }
+                    }
+                }
+            }
+        }
+        return heap;
+    }
+
+    public void garbageCollector() {
+        List<Integer> activeAddresses = repository.getProgramStateList().stream().flatMap(e -> getAddrFromSymTable(e).stream()).toList();
+        IMyHeap heap = repository.getProgramStateList().get(0).getHeap();
+        List<Integer> addresses = heap.getElements().keySet().stream().filter(e -> !activeAddresses.contains(e)).toList();
+        addresses.forEach(e -> {heap.deallocate(e); });
+    }
+
+    public List<Integer> getAddrFromSymTable(ProgramState state) {
+        Collection<IValue> symTableValues = state.getSymbolTable().getValues().values();
+
+        return symTableValues.stream()
+                .filter(v -> v instanceof RefValue)
+                .map(v -> ((RefValue) v).getAddress())
+                .collect(Collectors.toList());
+    }
+
+
+
     void allSteps(){
         executor = Executors.newFixedThreadPool(2);
         List<ProgramState> programList = removeCompletedPrograms(repository.getProgramStateList());
         while(programList.size()>0){
+            garbageCollector();
             oneStepForAllPrograms(programList);
             programList = removeCompletedPrograms(repository.getProgramStateList());
         }
@@ -141,7 +186,7 @@ public class Controller {
         IStatement ex1 = new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                 new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(2))), new PrintStatement(new VariableExpression("v"))));
         addState(ex1);
-        oneStepForAllPrograms(repository.getProgramStateList());
+        allSteps();
     }
 
     public void secondProgram() {
@@ -185,31 +230,6 @@ public class Controller {
                                                                         new CloseRFileStatement(new VariableExpression("varf"))))))))));
         addState(ex5);
         allSteps();
-    }
-
-    public HashMap<Integer, IValue> garbageCollector(IMyDictionary<String, IValue> symTable,  HashMap<Integer, IValue> heap){
-        for (IValue val : symTable.getValues().values()) {
-            if (val instanceof RefValue) {
-                int address = ((RefValue) val).getAddress();
-                if (heap.containsKey(address)) {
-                    heap.put(address, heap.get(address));
-                }
-
-                if(val.getType() instanceof RefValue) {
-                    if(heap.containsKey(address)) {
-                        IValue value = heap.get(address);
-                        while(value instanceof RefValue) {
-                            int address2 = ((RefValue) value).getAddress();
-                            if(heap.containsKey(address2)) {
-                                heap.put(address2, heap.get(address2));
-                            }
-                            value = heap.get(address2);
-                        }
-                    }
-                }
-            }
-        }
-        return heap;
     }
 
     public void sixthProgram() {
@@ -295,6 +315,24 @@ public class Controller {
                 ))))));
 
         addState(ex);
+        allSteps();
+    }
+    public void eleventhProgram() {
+        IStatement ex =  new CompoundStatement(new VariableDeclarationStatement("a", new RefType(new IntType())), new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
+                new CompoundStatement(new AllocateStatement("a", new ValueExpression(new IntValue(10))), new CompoundStatement(new ForkStatement(new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(20))),
+                        new CompoundStatement(new ForkStatement(new CompoundStatement(new WriteHeapStatement("a", new ValueExpression(new IntValue(40))), new PrintStatement(new ReadHeapExpression(new VariableExpression("a"))))),
+                                new PrintStatement(new VariableExpression("v"))))), new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(30))), new CompoundStatement(new PrintStatement(new VariableExpression("v")), new PrintStatement(new ReadHeapExpression(new VariableExpression("a")))))))));
+
+
+        addState(ex);
+        allSteps();
+    }
+
+    public void Program12(){
+        IStatement ex15 = new CompoundStatement(new VariableDeclarationStatement("varf", new StringType()), new CompoundStatement(new AssignStatement("varf", new ValueExpression(new StringValue("test.in"))),
+                new CompoundStatement(new OpenRFileStatement(new VariableExpression("varf")), new CompoundStatement(new ForkStatement(new CompoundStatement(new VariableDeclarationStatement("varc", new IntType()), new CompoundStatement(new ReadFileStatement(new VariableExpression("varf"), "varc"), new PrintStatement(new VariableExpression("varc"))))),
+                        new CompoundStatement(new VariableDeclarationStatement("varc", new IntType()), new CompoundStatement(new ReadFileStatement(new VariableExpression("varf"), "varc"), new CompoundStatement(new PrintStatement(new VariableExpression("varc")),new CloseRFileStatement(new VariableExpression("varf")))))))));
+        addState(ex15);
         allSteps();
     }
 

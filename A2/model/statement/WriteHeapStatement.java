@@ -1,13 +1,18 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
 import model.expression.IExpression;
 import model.modelExceptions.ElementDoesNotExistException;
+import model.modelExceptions.ValueHasWrongTypeException;
 import model.modelExceptions.ValuesHaveDifferentTypesException;
 import model.programState.ProgramState;
 import model.type.IType;
+import model.type.RefType;
 import model.value.IValue;
 import model.value.RefValue;
+
+import java.sql.Ref;
 
 public class WriteHeapStatement implements IStatement{
     String variableName;
@@ -38,5 +43,16 @@ public class WriteHeapStatement implements IStatement{
 
     public String toString(){
         return "writeHeap("+ variableName+","+expression.toString()+")";
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if(!typeEnvironment.contains(variableName))
+            throw new ElementDoesNotExistException("The element is not declared");
+        IType exprType = expression.typeCheck(typeEnvironment);
+        if(!((RefValue)(typeEnvironment.getValue(variableName))).getLocationType().equals(exprType))
+            throw new ValueHasWrongTypeException("The expression must have the same type as the declared one");
+        typeEnvironment.insert(variableName, new RefType(exprType));
+        return typeEnvironment;
     }
 }

@@ -1,6 +1,7 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
 import model.modelExceptions.ElementExistsException;
 import model.programState.ProgramState;
 import model.type.IType;
@@ -24,6 +25,12 @@ public class VariableDeclarationStatement implements IStatement{
 
     public String toString() {
         return variableType.toString() + " " + variableName;
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        typeEnvironment.insert(variableName, variableType);
+        return typeEnvironment;
     }
 }
 

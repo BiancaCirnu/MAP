@@ -1,12 +1,14 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
 import model.expression.IExpression;
 import model.expression.ValueExpression;
 import model.modelExceptions.FileIsNotOpenException;
 import model.modelExceptions.OpenFileException;
 import model.modelExceptions.ValueHasWrongTypeException;
 import model.programState.ProgramState;
+import model.type.IType;
 import model.type.IntType;
 import model.type.StringType;
 import model.value.IValue;
@@ -49,5 +51,14 @@ public class ReadFileStatement implements IStatement{
     @Override
     public String toString() {
         return "readFile("+ expression.toString()+ ','+ varName+")";
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if (!expression.typeCheck(typeEnvironment).equals(new StringType()))
+            throw new ValueHasWrongTypeException("expression must return a string");
+        if (!typeEnvironment.contains(varName))
+            throw new ValueHasWrongTypeException("variable is not declared");
+        return typeEnvironment;
     }
 }

@@ -1,10 +1,12 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
 import model.expression.IExpression;
 import model.modelExceptions.ValueHasWrongTypeException;
 import model.programState.ProgramState;
 import model.type.BoolType;
+import model.type.IType;
 import model.value.BoolValue;
 
 public class IfStatement implements IStatement {
@@ -30,5 +32,14 @@ public class IfStatement implements IStatement {
     }
     public String toString() {
         return "if " + condition.toString() + " then " + thenStatement.toString() + " else " + elseStatement.toString();
+    }
+
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if(!condition.typeCheck(typeEnvironment).equals(new BoolType()))
+            throw new ValueHasWrongTypeException("the condition must return a bool value");
+        thenStatement.typeCheck(typeEnvironment.deepCopy());
+        elseStatement.typeCheck(typeEnvironment.deepCopy());
+        return typeEnvironment;
     }
 }

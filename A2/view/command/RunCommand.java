@@ -50,6 +50,14 @@ public class RunCommand extends Command{
                 c = new Controller(new Repository("log10.txt"));
                 c.tenthProgram();
                 break;
+            case "11":
+                c = new Controller(new Repository("log11.txt"));
+                c.eleventhProgram();
+                break;
+            case "12":
+                c = new Controller(new Repository("log12.txt"));
+                c.Program12();
+                break;
         }
     }
 }

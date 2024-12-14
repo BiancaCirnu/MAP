@@ -1,11 +1,13 @@
 package model.statement;
 
 import exception.MyException;
+import model.adt.IMyDictionary;
 import model.adt.IMyStack;
 import model.expression.IExpression;
 import model.modelExceptions.OpenFileException;
 import model.modelExceptions.ValueHasWrongTypeException;
 import model.programState.ProgramState;
+import model.type.IType;
 import model.type.StringType;
 import model.value.IValue;
 import model.value.StringValue;
@@ -39,7 +41,12 @@ public class OpenRFileStatement implements IStatement{
 
         return null;
     }
-
+    @Override
+    public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if (!expression.typeCheck(typeEnvironment).equals(new StringType()))
+            throw new ValueHasWrongTypeException("expression must return a string");
+        return typeEnvironment;
+    }
 
     public String toString(){
         return "fopen("+expression.toString()+")";

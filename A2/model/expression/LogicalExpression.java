@@ -41,6 +41,16 @@ public class LogicalExpression implements IExpression {
                 throw new InvalidOperatorException();
         }
     }
+
+    @Override
+    public IType typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
+        if(!left.typeCheck(typeEnvironment).equals(new BoolType()))
+            throw new ValueHasWrongTypeException("The left expression doesn't return a bool");
+        if(!right.typeCheck(typeEnvironment).equals(new BoolType()))
+            throw new ValueHasWrongTypeException("The right expression doesn't return a bool");
+        return new BoolType();
+    }
+
     public String toString() {
         return left.toString() + " " + operator + " " + right.toString();
     }
