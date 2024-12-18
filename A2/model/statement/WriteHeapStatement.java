@@ -47,12 +47,8 @@ public class WriteHeapStatement implements IStatement{
 
     @Override
     public IMyDictionary<String, IType> typeCheck(IMyDictionary<String, IType> typeEnvironment) throws MyException {
-        if(!typeEnvironment.contains(variableName))
-            throw new ElementDoesNotExistException("The element is not declared");
-        IType exprType = expression.typeCheck(typeEnvironment);
-        if(!((RefValue)(typeEnvironment.getValue(variableName))).getLocationType().equals(exprType))
-            throw new ValueHasWrongTypeException("The expression must have the same type as the declared one");
-        typeEnvironment.insert(variableName, new RefType(exprType));
+        if (!typeEnvironment.getValue(variableName).equals(new RefType(expression.typeCheck(typeEnvironment))))
+            throw new MyException("Write Heap: left hand side and right hand side have different types!");
         return typeEnvironment;
     }
 }

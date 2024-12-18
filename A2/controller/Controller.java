@@ -4,6 +4,7 @@ import exception.MyException;
 import model.adt.IMyDictionary;
 import model.adt.IMyHeap;
 import model.adt.IMyStack;
+import model.adt.MyDictionary;
 import model.expression.*;
 import model.programState.ProgramState;
 import model.statement.*;
@@ -185,6 +186,12 @@ public class Controller {
     public void firstProgram() {
         IStatement ex1 = new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                 new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(2))), new PrintStatement(new VariableExpression("v"))));
+        try{
+            ex1.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
         addState(ex1);
         allSteps();
     }
@@ -196,6 +203,12 @@ public class Controller {
                                 ArithmeticExpression("*", new ValueExpression(new IntValue(3)), new ValueExpression(new IntValue(5))))),
                                 new CompoundStatement(new AssignStatement("b", new ArithmeticExpression("+", new VariableExpression("a"), new ValueExpression(new
                                         IntValue(1)))), new PrintStatement(new VariableExpression("b"))))));
+        try{
+            ex2.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
         addState(ex2);
         allSteps();
     }
@@ -207,6 +220,12 @@ public class Controller {
                                 new CompoundStatement(new IfStatement(new VariableExpression("a"), new AssignStatement("v", new ValueExpression(new
                                         IntValue(2))), new AssignStatement("v", new ValueExpression(new IntValue(3)))), new PrintStatement(new
                                         VariableExpression("v"))))));
+        try{
+            ex3.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
         addState(ex3);
         allSteps();
     }
@@ -228,6 +247,12 @@ public class Controller {
                                                         new CompoundStatement(new ReadFileStatement(new VariableExpression("varf"), "varc"),
                                                                 new CompoundStatement(new PrintStatement(new VariableExpression("varc")),
                                                                         new CloseRFileStatement(new VariableExpression("varf"))))))))));
+        try{
+            ex5.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
         addState(ex5);
         allSteps();
     }
@@ -245,12 +270,17 @@ public class Controller {
                                                 "+",
                                                 new ReadHeapExpression(new VariableExpression("v")), // Read the value at 'v'
                                                 new ValueExpression(new IntValue(5)) // Add 5
-                                        )) // Print the result of reading the heap and adding 5
+                                        ))
                                 )
                         )
                 )
         );
-
+        try{
+            ex.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
         addState(ex); // Add this statement to the program's state
         allSteps();
     }
@@ -269,6 +299,12 @@ public class Controller {
                         )
                 )
         );
+        try{
+            ex.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
         addState(ex);
         allSteps();
     }
@@ -298,6 +334,12 @@ public class Controller {
                 new CompoundStatement( new VariableDeclarationStatement("a",new RefType(new RefType(new IntType()))), new CompoundStatement(new AllocateStatement("a",new VariableExpression("v")),
                 new CompoundStatement(new PrintStatement(new ReadHeapExpression(new VariableExpression("v"))), new PrintStatement(new ArithmeticExpression("+", new ReadHeapExpression(new ReadHeapExpression(new VariableExpression("a"))), new ValueExpression(new IntValue(5))))
                 )))));
+        try{
+            ex.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
         addState(ex);
         allSteps();
     }
@@ -313,6 +355,12 @@ public class Controller {
                 )))), new CompoundStatement(new PrintStatement(new VariableExpression("v")), // Print 'v' in main thread
                 new PrintStatement(new ReadHeapExpression(new VariableExpression("a"))) // Print value in heap at 'a' in main thread
                 ))))));
+        try{
+            ex.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
 
         addState(ex);
         allSteps();
@@ -329,12 +377,20 @@ public class Controller {
     }
 
     public void Program12(){
-        IStatement ex15 = new CompoundStatement(new VariableDeclarationStatement("varf", new StringType()), new CompoundStatement(new AssignStatement("varf", new ValueExpression(new StringValue("test.in"))),
+        IStatement ex = new CompoundStatement(new VariableDeclarationStatement("varf", new StringType()), new CompoundStatement(new AssignStatement("varf", new ValueExpression(new StringValue("test.in"))),
                 new CompoundStatement(new OpenRFileStatement(new VariableExpression("varf")), new CompoundStatement(new ForkStatement(new CompoundStatement(new VariableDeclarationStatement("varc", new IntType()), new CompoundStatement(new ReadFileStatement(new VariableExpression("varf"), "varc"), new PrintStatement(new VariableExpression("varc"))))),
                         new CompoundStatement(new VariableDeclarationStatement("varc", new IntType()), new CompoundStatement(new ReadFileStatement(new VariableExpression("varf"), "varc"), new CompoundStatement(new PrintStatement(new VariableExpression("varc")),new CloseRFileStatement(new VariableExpression("varf")))))))));
-        addState(ex15);
+
+        try{
+            ex.typeCheck(new MyDictionary<String, IType>());
+        }catch (MyException e)
+        {
+            System.out.println("Didn't pass the type checker");
+        }
+        addState(ex);
         allSteps();
     }
 
 }
 
+// 6 7 10 
