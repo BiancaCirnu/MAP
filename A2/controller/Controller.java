@@ -18,20 +18,26 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
 public class Controller {
     Repository repository;
     boolean displayFlag;
     ExecutorService executor;
+    public boolean checkedStates = true;
     public Controller() {
         repository = new Repository("test.in");
         displayFlag = true;
+    }
+    public Controller(Repository programs, Boolean checked) {
+        this.repository = programs;
+        displayFlag = false;
+        checkedStates= checked;
     }
 
     public Controller(Repository programs) {
         this.repository = programs;
         displayFlag = false;
     }
+
     public void oneStepForAllPrograms(List<ProgramState> programStates)
     {
 
@@ -108,10 +114,8 @@ public class Controller {
     public List<Integer> getAddrFromSymTable(ProgramState state) {
         Collection<IValue> symTableValues = state.getSymbolTable().getValues().values();
 
-        return symTableValues.stream()
-                .filter(v -> v instanceof RefValue)
-                .map(v -> ((RefValue) v).getAddress())
-                .collect(Collectors.toList());
+        return symTableValues.stream().filter(v -> v instanceof RefValue)
+                .map(v -> ((RefValue) v).getAddress()).collect(Collectors.toList());
     }
 
 
@@ -183,61 +187,57 @@ public class Controller {
     }
     //HARDCODED EXAMPLES
 
-    public void firstProgram() {
+    public void firstProgram() throws MyException{
         IStatement ex1 = new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                 new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(2))), new PrintStatement(new VariableExpression("v"))));
-        try{
+
             ex1.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
+        if(checkedStates) {
+            addState(ex1);
+            allSteps();
         }
-        addState(ex1);
-        allSteps();
     }
 
-    public void secondProgram() {
+    public void secondProgram() throws MyException {
         IStatement ex2 = new CompoundStatement(new VariableDeclarationStatement("a", new IntType()),
                 new CompoundStatement(new VariableDeclarationStatement("b", new IntType()),
                         new CompoundStatement(new AssignStatement("a", new ArithmeticExpression("+", new ValueExpression(new IntValue(2)), new
                                 ArithmeticExpression("*", new ValueExpression(new IntValue(3)), new ValueExpression(new IntValue(5))))),
                                 new CompoundStatement(new AssignStatement("b", new ArithmeticExpression("+", new VariableExpression("a"), new ValueExpression(new
                                         IntValue(1)))), new PrintStatement(new VariableExpression("b"))))));
-        try{
+
             ex2.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
+
+        if(checkedStates) {
+            addState(ex2);
+            allSteps();
         }
-        addState(ex2);
-        allSteps();
     }
 
-    public void thirdProgram() {
+    public void thirdProgram() throws MyException{
         IStatement ex3 = new CompoundStatement(new VariableDeclarationStatement("a", new BoolType()),
                 new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                         new CompoundStatement(new AssignStatement("a", new RelationalExpression(new ValueExpression(new IntValue(2)), RelationalOperator.GREATER, new ValueExpression(new IntValue(1)))),
                                 new CompoundStatement(new IfStatement(new VariableExpression("a"), new AssignStatement("v", new ValueExpression(new
                                         IntValue(2))), new AssignStatement("v", new ValueExpression(new IntValue(3)))), new PrintStatement(new
                                         VariableExpression("v"))))));
-        try{
             ex3.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
+        if(checkedStates){
+            addState(ex3);
+            allSteps();
         }
-        addState(ex3);
-        allSteps();
     }
 
-    public void fourthProgram() {
+    public void fourthProgram() throws MyException{
         // Error 1
         IStatement ex4 = new CompoundStatement(new VariableDeclarationStatement("a", new IntType()), new CompoundStatement(new VariableDeclarationStatement("b", new BoolType()), new AssignStatement("a", new VariableExpression("b"))));
-        addState(ex4);
-        allSteps();
+        if(checkedStates) {
+            addState(ex4);
+            allSteps();
+        }
     }
 
-    public void fifthProgram() {
+    public void fifthProgram() throws MyException{
         IStatement ex5 = new CompoundStatement(new VariableDeclarationStatement("varf", new StringType()),
                 new CompoundStatement(new AssignStatement("varf", new ValueExpression(new StringValue("test.in"))),
                         new CompoundStatement(new OpenRFileStatement(new VariableExpression("varf")),
@@ -247,18 +247,16 @@ public class Controller {
                                                         new CompoundStatement(new ReadFileStatement(new VariableExpression("varf"), "varc"),
                                                                 new CompoundStatement(new PrintStatement(new VariableExpression("varc")),
                                                                         new CloseRFileStatement(new VariableExpression("varf"))))))))));
-        try{
+
             ex5.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
+        if(checkedStates) {
+            addState(ex5);
+            allSteps();
         }
-        addState(ex5);
-        allSteps();
     }
 
-    public void sixthProgram() {
-        IStatement ex = new CompoundStatement(
+    public void sixthProgram() throws MyException{
+        IStatement ex6 = new CompoundStatement(
                 new VariableDeclarationStatement("v", new RefType(new IntType())), // Declare 'v' as a reference to an int
                 new CompoundStatement(
                         new AllocateStatement("v", new ValueExpression(new IntValue(20))), // Allocate memory for 'v' with value 20
@@ -275,16 +273,14 @@ public class Controller {
                         )
                 )
         );
-        try{
-            ex.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
+
+        ex6.typeCheck(new MyDictionary<String, IType>());
+        if(checkedStates) {
+            addState(ex6); // Add this statement to the program's state
+            allSteps();
         }
-        addState(ex); // Add this statement to the program's state
-        allSteps();
     }
-    public void seventhProgram()
+    public void seventhProgram()throws MyException
     {
         IStatement ex = new CompoundStatement(
                 new VariableDeclarationStatement("v", new RefType(new IntType())),
@@ -299,16 +295,13 @@ public class Controller {
                         )
                 )
         );
-        try{
-            ex.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
+        ex.typeCheck(new MyDictionary<String, IType>());
+        if(checkedStates){
+            addState(ex);
+            allSteps();
         }
-        addState(ex);
-        allSteps();
     }
-    public void eightProgram() {
+    public void eightProgram() throws MyException{
         IStatement ex = new CompoundStatement(
                 new VariableDeclarationStatement("v", new IntType()),
                 new CompoundStatement(
@@ -325,25 +318,25 @@ public class Controller {
                         )
                 )
         );
-        addState(ex);
-        allSteps();
+        if(checkedStates) {
+            addState(ex);
+            allSteps();
+        }
     }
-    public void ninthProgram(){
+    public void ninthProgram()throws MyException{
         IStatement ex = new CompoundStatement(new VariableDeclarationStatement("v", new RefType(new IntType())),
                 new CompoundStatement( new AllocateStatement("v", new ValueExpression(new IntValue(20))),
                 new CompoundStatement( new VariableDeclarationStatement("a",new RefType(new RefType(new IntType()))), new CompoundStatement(new AllocateStatement("a",new VariableExpression("v")),
                 new CompoundStatement(new PrintStatement(new ReadHeapExpression(new VariableExpression("v"))), new PrintStatement(new ArithmeticExpression("+", new ReadHeapExpression(new ReadHeapExpression(new VariableExpression("a"))), new ValueExpression(new IntValue(5))))
                 )))));
-        try{
-            ex.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
+
+        ex.typeCheck(new MyDictionary<String, IType>());
+        if(checkedStates) {
+            addState(ex);
+            allSteps();
         }
-        addState(ex);
-        allSteps();
     }
-    public void tenthProgram() {
+    public void tenthProgram() throws MyException{
         IStatement ex = new CompoundStatement(
                 new VariableDeclarationStatement("v", new IntType()), // Declare variable 'v'
                 new CompoundStatement(new VariableDeclarationStatement("a", new RefType(new IntType())), // Declare reference 'a'
@@ -355,42 +348,52 @@ public class Controller {
                 )))), new CompoundStatement(new PrintStatement(new VariableExpression("v")), // Print 'v' in main thread
                 new PrintStatement(new ReadHeapExpression(new VariableExpression("a"))) // Print value in heap at 'a' in main thread
                 ))))));
-        try{
             ex.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
-        }
 
-        addState(ex);
-        allSteps();
+        if(checkedStates) {
+            addState(ex);
+            allSteps();
+        }
     }
-    public void eleventhProgram() {
+    public void eleventhProgram() throws MyException{
         IStatement ex =  new CompoundStatement(new VariableDeclarationStatement("a", new RefType(new IntType())), new CompoundStatement(new VariableDeclarationStatement("v", new IntType()),
                 new CompoundStatement(new AllocateStatement("a", new ValueExpression(new IntValue(10))), new CompoundStatement(new ForkStatement(new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(20))),
                         new CompoundStatement(new ForkStatement(new CompoundStatement(new WriteHeapStatement("a", new ValueExpression(new IntValue(40))), new PrintStatement(new ReadHeapExpression(new VariableExpression("a"))))),
                                 new PrintStatement(new VariableExpression("v"))))), new CompoundStatement(new AssignStatement("v", new ValueExpression(new IntValue(30))), new CompoundStatement(new PrintStatement(new VariableExpression("v")), new PrintStatement(new ReadHeapExpression(new VariableExpression("a")))))))));
-
-
-        addState(ex);
-        allSteps();
+        if(checkedStates) {
+            addState(ex);
+            allSteps();
+        }
     }
 
-    public void Program12(){
+    public void Program12()throws MyException{
         IStatement ex = new CompoundStatement(new VariableDeclarationStatement("varf", new StringType()), new CompoundStatement(new AssignStatement("varf", new ValueExpression(new StringValue("test.in"))),
                 new CompoundStatement(new OpenRFileStatement(new VariableExpression("varf")), new CompoundStatement(new ForkStatement(new CompoundStatement(new VariableDeclarationStatement("varc", new IntType()), new CompoundStatement(new ReadFileStatement(new VariableExpression("varf"), "varc"), new PrintStatement(new VariableExpression("varc"))))),
                         new CompoundStatement(new VariableDeclarationStatement("varc", new IntType()), new CompoundStatement(new ReadFileStatement(new VariableExpression("varf"), "varc"), new CompoundStatement(new PrintStatement(new VariableExpression("varc")),new CloseRFileStatement(new VariableExpression("varf")))))))));
 
-        try{
+
             ex.typeCheck(new MyDictionary<String, IType>());
-        }catch (MyException e)
-        {
-            System.out.println("Didn't pass the type checker");
+        if(checkedStates) {
+            addState(ex);
+            allSteps();
         }
-        addState(ex);
-        allSteps();
     }
 
+    public void Program13() throws MyException{
+        IStatement ex = new CompoundStatement(new VariableDeclarationStatement("stringElem", new StringType()), new AssignStatement("stringElem", new ValueExpression(new IntValue(5))));
+        ex.typeCheck(new MyDictionary<String, IType>());
+        if(checkedStates) {
+            addState(ex);
+            allSteps();
+        }
+    }
+    public void Program14() throws MyException{
+        IStatement ex = new CompoundStatement(new VariableDeclarationStatement("reference", new RefType(new IntType())), new AssignStatement("reference", new ValueExpression(new StringValue("notReference"))));
+        ex.typeCheck(new MyDictionary<String, IType>());
+        if(checkedStates) {
+            addState(ex);
+            allSteps();
+        }
+    }
 }
 
-// 6 7 10 

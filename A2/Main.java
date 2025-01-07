@@ -1,9 +1,20 @@
 import exception.MyException;
+import model.adt.MyDictionary;
+import model.expression.*;
+import model.statement.*;
+import model.type.*;
+import model.value.IntValue;
+import model.value.StringValue;
 import view.TextMenu;
 
 import view.command.*;
 
+import java.util.Vector;
+
+import static java.lang.System.exit;
+
 public class Main {
+
     public static void main(String[] args){
         TextMenu menu = new TextMenu();
         menu.addCommand(new ExitCommand("0", "Exit") );
@@ -19,7 +30,8 @@ public class Main {
         menu.addCommand(new RunCommand("10", "Run program 10"));
         menu.addCommand(new RunCommand("11", "Run program 11"));
         menu.addCommand(new RunCommand("12", "Run program 12"));
-
+        menu.addCommand(new RunCommand("13", "Run program 13"));
+        menu.addCommand(new RunCommand("14", "Run program 14"));
         menu.show();
     }
 }
